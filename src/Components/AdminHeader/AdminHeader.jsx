@@ -124,9 +124,7 @@ const AdminHeader = () => {
           <a href="/orders" className="block" onClick={handleCloseMenu}>
             Orders
           </a>
-          <a href="/communities" className=" block" onClick={handleCloseMenu}>
-            Communities
-          </a>
+      
         </nav>
       </div>
     </header>
