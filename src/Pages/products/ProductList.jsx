@@ -649,7 +649,7 @@ const ProductList = () => {
                     {product.type}
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-700">
-                    {product.brand}
+               {product.brand.name}
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-700">
                     {product.color?.join(", ")}

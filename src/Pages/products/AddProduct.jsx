@@ -11,6 +11,7 @@ const AddProduct = () => {
   const [productType, setProductType] = useState("");
   const [productQuantity, setProductQuantity] = useState(0);
   const [productSize, setProductSize] = useState("");
+  const [productTag, setProductTag] = useState("");
   const [productISBN, setProductISBN] = useState("");
   const [categoryName, setCategoryName] = useState("");
   const [categoryImage, setCategoryImage] = useState(null);
@@ -26,7 +27,7 @@ const AddProduct = () => {
   const [minimumQuantity, setMinimumQuantity] = useState(1);
   const [color, setColor] = useState("");
   const [size, setSize] = useState("");
-  const [tag, setTag] = useState("");
+
   const [decorationMethods, setDecorationMethods] = useState("");
   const [features, setFeatures] = useState("");
   const [material, setMaterial] = useState("");
@@ -404,66 +405,173 @@ const toggleColor = (color) => {
   //     setLoading(false); // Stop loading after submission
   //   }
   // };
+// const handleSubmit = async () => {
+//   setLoading(true);
+
+//   try {
+//     const formData = new FormData();
+
+//     // ✅ Basic fields
+//     if (productName) formData.append("name", productName);
+//     if (productDescription) formData.append("description", productDescription);
+//     if (productPrice) formData.append("price", productPrice);
+//     if (discountPrice) formData.append("discountPrice", discountPrice);
+//     if (productType) formData.append("type", productType);
+
+//     // ✅ Inventory
+//     if (productQuantity) {
+//       formData.append("quantityAvailable", productQuantity);
+//     }
+//     if (minimumQuantity) {
+//       formData.append("minimumQuantity", minimumQuantity);
+//     }
+
+//     // ✅ Attributes (arrays)
+//     if (selectedColors.length > 0) {
+//       selectedColors.forEach((color) => formData.append("color", color));
+//     }
+// if (productSize) {
+//   formData.append("size", productSize);
+// }
+
+
+// if (productTag) {
+//   formData.append("tag", productTag);
+// }
+
+
+//     if (Array.isArray(decorationMethods) && decorationMethods.length > 0) {
+//       decorationMethods.forEach((method) =>
+//         formData.append("decorationMethods", method)
+//       );
+//     } else if (decorationMethods) {
+//       formData.append("decorationMethods", decorationMethods);
+//     }
+
+//     if (Array.isArray(features) && features.length > 0) {
+//       features.forEach((feature) => formData.append("features", feature));
+//     } else if (features) {
+//       formData.append("features", features);
+//     }
+
+//     // ✅ Extra details (single values)
+//     if (material) formData.append("material", material);
+//     if (weight) formData.append("weight", weight);
+//     if (brand) formData.append("brand", brand);
+//     if (closureType) formData.append("closureType", closureType);
+
+//     // ✅ Category
+//     if (selectedChild) formData.append("category", selectedChild);
+
+//     // ✅ Images (multiple uploads)
+//     if (productImages.length > 0) {
+//       productImages.forEach((image) => {
+//         formData.append("images", image);
+//       });
+//     }
+
+//     // ✅ Supporting file (optional)
+//     if (supportingFile) {
+//       formData.append("supportingFile", supportingFile);
+//     }
+
+//     // 🚀 API call
+//     const productRes = await axios.post(
+//       `${import.meta.env.VITE_BASE_URL}/create-product`,
+//       formData,
+//       {
+//         headers: { "Content-Type": "multipart/form-data" },
+//       }
+//     );
+
+//     console.log("✅ Product created:", productRes.data);
+//     navigate("/products");
+//   } catch (error) {
+//     console.error("❌ Error creating product:", error);
+//   } finally {
+//     setLoading(false);
+//   }
+// };
 const handleSubmit = async () => {
   setLoading(true);
 
   try {
     const formData = new FormData();
 
-    // Basic fields
+    // ✅ Basic fields
     if (productName) formData.append("name", productName);
     if (productDescription) formData.append("description", productDescription);
     if (productPrice) formData.append("price", productPrice);
     if (discountPrice) formData.append("discountPrice", discountPrice);
     if (productType) formData.append("type", productType);
 
-    // Inventory
-    if (productQuantity)
+    // ✅ Inventory
+    if (productQuantity) {
       formData.append("quantityAvailable", productQuantity);
-    if (minimumQuantity)
+    }
+    if (minimumQuantity) {
       formData.append("minimumQuantity", minimumQuantity);
+    }
 
-    // Attributes (arrays)
-    if (productColors.length > 0) {
-      productColors.forEach((color) => formData.append("color", color));
+    // ✅ Attributes (arrays)
+    if (selectedColors.length > 0) {
+      selectedColors.forEach((color) => formData.append("color", color));
     }
-    if (productSizes.length > 0) {
-      productSizes.forEach((size) => formData.append("size", size));
+    if (productSize) {
+      formData.append("size", productSize);
     }
-    if (productTags.length > 0) {
-      productTags.forEach((tag) => formData.append("tag", tag));
+
+    if (productTag) {
+      formData.append("tag", productTag);
     }
-    if (decorationMethods.length > 0) {
+
+    if (Array.isArray(decorationMethods) && decorationMethods.length > 0) {
       decorationMethods.forEach((method) =>
         formData.append("decorationMethods", method)
       );
-    }
-    if (features.length > 0) {
-      features.forEach((feature) => formData.append("features", feature));
+    } else if (decorationMethods) {
+      formData.append("decorationMethods", decorationMethods);
     }
 
-    // Extra details
+    if (Array.isArray(features) && features.length > 0) {
+      features.forEach((feature) => formData.append("features", feature));
+    } else if (features) {
+      formData.append("features", features);
+    }
+
+    // ✅ Extra details (single values)
     if (material) formData.append("material", material);
     if (weight) formData.append("weight", weight);
     if (brand) formData.append("brand", brand);
     if (closureType) formData.append("closureType", closureType);
 
-    // Category
-    if (selectedChild) formData.append("category", selectedChild);
+    // ✅ Category (child → parent → grandparent fallback)
+    if (selectedChild) {
+      formData.append("category", selectedChild);
+    } else if (selectedParent) {
+      formData.append("category", selectedParent);
+    } else if (selectedGrandParent) {
+      formData.append("category", selectedGrandParent);
+    }
 
-    // Images
+    // ✅ Images (multiple uploads)
     if (productImages.length > 0) {
       productImages.forEach((image) => {
         formData.append("images", image);
       });
     }
 
-    // Supporting file (optional)
+    // ✅ Supporting file (optional)
     if (supportingFile) {
       formData.append("supportingFile", supportingFile);
     }
 
-    // ✅ API call
+    // 🔍 Debug: show what’s being sent
+    for (let [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
+
+    // 🚀 API call
     const productRes = await axios.post(
       `${import.meta.env.VITE_BASE_URL}/create-product`,
       formData,
@@ -480,6 +588,7 @@ const handleSubmit = async () => {
     setLoading(false);
   }
 };
+
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files); // ✅ Convert to array
@@ -626,8 +735,8 @@ const handleSubmit = async () => {
         {/* Array fields */}
         {[
 
-          { label: "Sizes (comma separated)", state: size, setter: setSize },
-          { label: "Tags (comma separated)", state: tag, setter: setTag },
+       
+          { label: "Tags (comma separated)", state: productTag, setter: setProductTag },
        
           { label: "Features (comma separated)", state: features, setter: setFeatures },
         ].map(({ label, state, setter }) => (
@@ -735,13 +844,14 @@ const handleSubmit = async () => {
      
         <div className="mb-4">
           <label className="block mb-1 font-medium">Upload Product Images</label>
+    
           <input
-            type="file"
-            multiple
-            accept="image/*"
-            onChange={(e) => setImages([...e.target.files])}
-            className="w-full"
-          />
+  type="file"
+  multiple
+  accept="image/*"
+  onChange={(e) => setProductImages([...e.target.files])}
+/>
+
         </div>
 
         {/* Submit Button */}
