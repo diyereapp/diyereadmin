@@ -7,7 +7,6 @@ const AddProduct = () => {
   const [productName, setProductName] = useState("");
   const [productDescription, setProductDescription] = useState("");
   const [productPrice, setProductPrice] = useState("");
-  const [productCategory, setProductCategory] = useState("");
   const [productImages, setProductImages] = useState([]);
   const [productType, setProductType] = useState("");
   const [productQuantity, setProductQuantity] = useState(0);
@@ -20,35 +19,80 @@ const AddProduct = () => {
   const [language, setLanguage] = useState("");
   const [discountPrice, setDiscountPrice] = useState("");
   const [categories, setCategories] = useState([]);
-  const [parentCategories, setParentCategories] = useState([]);
-  const [childCategories, setChildCategories] = useState([]);
-  const [selectedParentId, setSelectedParentId] = useState("");
-  const [selectedChildId, setSelectedChildId] = useState("");
-  const [videoOrAudioFile, setVideoOrAudioFile] = useState(null);
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [price, setPrice] = useState("");
+  const [quantityAvailable, setQuantityAvailable] = useState(0);
+  const [minimumQuantity, setMinimumQuantity] = useState(1);
+  const [color, setColor] = useState("");
+  const [size, setSize] = useState("");
+  const [tag, setTag] = useState("");
+  const [decorationMethods, setDecorationMethods] = useState("");
+  const [features, setFeatures] = useState("");
+  const [material, setMaterial] = useState("");
+  const [weight, setWeight] = useState("");
+  const [brand, setBrand] = useState("");
+  const [closureType, setClosureType] = useState("");
+  const [images, setImages] = useState([]);
+  const [brands, setBrands] = useState([]);
+
+  const [videoOrAudioFile, setVideoOrAudioFile] =  useState(null);
   const [supportingFile, setSupportingFile] = useState(null);
   const [loading, setLoading] = useState(false);
+
+
+  const [grandParents, setGrandParents] = useState([]);
+  const [parents, setParents] = useState([]);
+  const [children, setChildren] = useState([]);
+
+  const [selectedGrandParent, setSelectedGrandParent] = useState("");
+  const [selectedParent, setSelectedParent] = useState("");
+  const [selectedChild, setSelectedChild] = useState("");
 
   const [newSubCategory, setNewSubCategory] = useState("");
   const navigate = useNavigate();
 
   // Fetch all categories
-  const fetchCategories = async () => {
-    try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/categories`
-      );
-      const allCategories = res.data;
-      setCategories(allCategories);
+  // const fetchCategories = async () => {
+  //   try {
+  //     const res = await axios.get(
+  //       `${import.meta.env.VITE_BASE_URL}/categories`
+  //     );
+  //     const allCategories = res.data;
+  //     setCategories(allCategories);
 
-      // Parent categories are those with null or no parent
-      const parents = allCategories.filter(
-        (cat) => !cat.parent || cat.parent === null
-      );
-      setParentCategories(parents);
+  //     // Parent categories are those with null or no parent
+  //     const parents = allCategories.filter(
+  //       (cat) => !cat.parent || cat.parent === null
+  //     );
+  //     setParentCategories(parents);
+  //   } catch (error) {
+  //     console.error("Failed to fetch categories:", error);
+  //   }
+  // };
+const fetchCategories = async () => {
+  try {
+    const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/categories`);
+    const allCategories = res.data;
+
+    setGrandParents(allCategories); // They are already top-level categories
+  } catch (error) {
+    console.error("Failed to fetch categories:", error);
+  }
+};
+ const fetchBrands = async () => {
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/brands`);
+      setBrands(res.data); // assuming API returns [{ _id, name, image }]
     } catch (error) {
-      console.error("Failed to fetch categories:", error);
+      console.error("Failed to fetch brands:", error);
     }
   };
+
+  useEffect(() => {
+    fetchBrands();
+  }, []);
+
 
   // Handle parent selection
   // const handleParentChange = (e) => {
@@ -79,25 +123,84 @@ const AddProduct = () => {
 
   //   setChildCategories(children);
   // };
-  const handleParentChange = (e) => {
-    const parentId = e.target.value;
-    setSelectedParentId(parentId);
-    setSelectedChildId("");
+  // const handleParentChange = (e) => {
+  //   const parentId = e.target.value;
+  //   setSelectedParentId(parentId);
+  //   setSelectedChildId("");
 
-    const selectedParent = categories.find((cat) => cat._id === parentId);
+  //   const selectedParent = categories.find((cat) => cat._id === parentId);
 
-    const children =
-      selectedParent?.children?.filter((child) => {
-        // Optional: Filter out products if you only want subcategories
-        return child.name && child._id;
-      }) || [];
+  //   const children =
+  //     selectedParent?.children?.filter((child) => {
+  //       // Optional: Filter out products if you only want subcategories
+  //       return child.name && child._id;
+  //     }) || [];
 
-    console.log("Parent ID:", parentId);
-    console.log("Selected Parent:", selectedParent);
-    console.log("Filtered children:", children);
+  //   console.log("Parent ID:", parentId);
+  //   console.log("Selected Parent:", selectedParent);
+  //   console.log("Filtered children:", children);
 
-    setChildCategories(children);
-  };
+  //   setChildCategories(children);
+  // };
+
+  // Handle grandparent change
+  // const handleGrandParentChange = (e) => {
+  //   const grandParentId = e.target.value;
+  //   setSelectedGrandParent(grandParentId);
+  //   setSelectedParent("");
+  //   setSelectedChild("");
+
+  //   // Find parents of this grandparent
+  //   const parentsList = categories.filter(
+  //     (cat) =>
+  //       cat.parent &&
+  //       (typeof cat.parent === "string"
+  //         ? cat.parent === grandParentId
+  //         : cat.parent._id === grandParentId)
+  //   );
+  //   setParents(parentsList);
+  //   setChildren([]);
+  // };
+
+
+  // Handle parent change
+  // const handleParentChange = (e) => {
+  //   const parentId = e.target.value;
+  //   setSelectedParent(parentId);
+  //   setSelectedChild("");
+
+  //   // Find children of this parent
+  //   const childList = categories.filter(
+  //     (cat) =>
+  //       cat.parent &&
+  //       (typeof cat.parent === "string"
+  //         ? cat.parent === parentId
+  //         : cat.parent._id === parentId)
+  //   );
+  //   setChildren(childList);
+  // };
+
+const handleGrandParentChange = (e) => {
+  const grandParentId = e.target.value;
+  setSelectedGrandParent(grandParentId);
+  setSelectedParent("");
+  setSelectedChild("");
+
+  // find the selected grandparent
+  const grandParent = grandParents.find(cat => cat._id === grandParentId);
+  setParents(grandParent ? grandParent.children : []);
+  setChildren([]);
+};
+
+const handleParentChange = (e) => {
+  const parentId = e.target.value;
+  setSelectedParent(parentId);
+  setSelectedChild("");
+
+  const parent = parents.find(cat => cat._id === parentId);
+  setChildren(parent ? parent.children : []);
+};
+
 
   // useEffect(() => {
   //   fetchCategories();
@@ -118,6 +221,32 @@ const AddProduct = () => {
   useEffect(() => {
     fetchCategories();
   }, []);
+// Predefined colors (can also fetch from backend if you want dynamic)
+const availableColors = [
+  { name: "Black", hex: "#000000" },
+  { name: "White", hex: "#FFFFFF" },
+  { name: "Red", hex: "#FF0000" },
+  { name: "Blue", hex: "#0000FF" },
+  { name: "Green", hex: "#008000" },
+  { name: "Yellow", hex: "#FFFF00" },
+  { name: "Purple", hex: "#800080" },
+  { name: "Gray", hex: "#808080" },
+  { name: "Navy", hex: "#001F54" },
+  { name: "Orange", hex: "#FFA500" },
+];
+
+const [selectedColors, setSelectedColors] = useState([]);
+
+// Handle selecting/unselecting colors
+const toggleColor = (color) => {
+  if (selectedColors.includes(color)) {
+    setSelectedColors(selectedColors.filter((c) => c !== color));
+  } else {
+    if (selectedColors.length < 10) {
+      setSelectedColors([...selectedColors, color]);
+    }
+  }
+};
 
   // const handleSubmit = async () => {
   //   try {
@@ -229,50 +358,128 @@ const AddProduct = () => {
   //     console.error("Error creating product:", error);
   //   }
   // };
-  const handleSubmit = async () => {
-    setLoading(true); // Start loading before making the request
 
-    try {
-      const formData = new FormData();
 
-      // Append fields only if they are not empty
-      if (productName) formData.append("name", productName);
-      if (productDescription)
-        formData.append("description", productDescription);
-      if (productPrice) formData.append("price", productPrice);
-      if (discountPrice) formData.append("discountPrice", discountPrice);
-      if (productQuantity)
-        formData.append("quantityAvailable", productQuantity);
-      if (productSize) formData.append("size", productSize);
-      if (language) formData.append("language", language);
-      if (productISBN) formData.append("isbn", productISBN);
-      if (productType) formData.append("productType", productType);
-      if (selectedChildId) formData.append("category", selectedChildId); // Attach child category
+  // const handleSubmit = async () => {
+  //   setLoading(true); // Start loading before making the request
 
-      // Images
+  //   try {
+  //     const formData = new FormData();
+
+  //     // Append fields only if they are not empty
+  //     if (productName) formData.append("name", productName);
+  //     if (productDescription)
+  //       formData.append("description", productDescription);
+  //     if (productPrice) formData.append("price", productPrice);
+  //     if (discountPrice) formData.append("discountPrice", discountPrice);
+  //     if (productQuantity)
+  //       formData.append("quantityAvailable", productQuantity);
+  //     if (productSize) formData.append("size", productSize);
+  //     if (language) formData.append("language", language);
+  //     if (productISBN) formData.append("isbn", productISBN);
+  //     if (productType) formData.append("productType", productType);
+  //     if (selectedChildId) formData.append("category", selectedChildId); // Attach child category
+
+  //     // Images
+  //     productImages.forEach((image) => {
+  //       formData.append("images", image);
+  //     });
+
+  //     // Supporting file (optional)
+  //     if (supportingFile) {
+  //       formData.append("supportingFile", supportingFile);
+  //     }
+
+  //     // Make the POST request to the server
+  //     const productRes = await axios.post(
+  //       `${import.meta.env.VITE_BASE_URL}/create-product`,
+  //       formData
+  //     );
+
+  //     console.log("Product created:", productRes.data);
+  //     navigate("/products");
+  //   } catch (error) {
+  //     console.error("Error creating product:", error);
+  //   } finally {
+  //     setLoading(false); // Stop loading after submission
+  //   }
+  // };
+const handleSubmit = async () => {
+  setLoading(true);
+
+  try {
+    const formData = new FormData();
+
+    // Basic fields
+    if (productName) formData.append("name", productName);
+    if (productDescription) formData.append("description", productDescription);
+    if (productPrice) formData.append("price", productPrice);
+    if (discountPrice) formData.append("discountPrice", discountPrice);
+    if (productType) formData.append("type", productType);
+
+    // Inventory
+    if (productQuantity)
+      formData.append("quantityAvailable", productQuantity);
+    if (minimumQuantity)
+      formData.append("minimumQuantity", minimumQuantity);
+
+    // Attributes (arrays)
+    if (productColors.length > 0) {
+      productColors.forEach((color) => formData.append("color", color));
+    }
+    if (productSizes.length > 0) {
+      productSizes.forEach((size) => formData.append("size", size));
+    }
+    if (productTags.length > 0) {
+      productTags.forEach((tag) => formData.append("tag", tag));
+    }
+    if (decorationMethods.length > 0) {
+      decorationMethods.forEach((method) =>
+        formData.append("decorationMethods", method)
+      );
+    }
+    if (features.length > 0) {
+      features.forEach((feature) => formData.append("features", feature));
+    }
+
+    // Extra details
+    if (material) formData.append("material", material);
+    if (weight) formData.append("weight", weight);
+    if (brand) formData.append("brand", brand);
+    if (closureType) formData.append("closureType", closureType);
+
+    // Category
+    if (selectedChild) formData.append("category", selectedChild);
+
+    // Images
+    if (productImages.length > 0) {
       productImages.forEach((image) => {
         formData.append("images", image);
       });
-
-      // Supporting file (optional)
-      if (supportingFile) {
-        formData.append("supportingFile", supportingFile);
-      }
-
-      // Make the POST request to the server
-      const productRes = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/create-product`,
-        formData
-      );
-
-      console.log("Product created:", productRes.data);
-      navigate("/products");
-    } catch (error) {
-      console.error("Error creating product:", error);
-    } finally {
-      setLoading(false); // Stop loading after submission
     }
-  };
+
+    // Supporting file (optional)
+    if (supportingFile) {
+      formData.append("supportingFile", supportingFile);
+    }
+
+    // ✅ API call
+    const productRes = await axios.post(
+      `${import.meta.env.VITE_BASE_URL}/create-product`,
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    );
+
+    console.log("✅ Product created:", productRes.data);
+    navigate("/products");
+  } catch (error) {
+    console.error("❌ Error creating product:", error);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files); // ✅ Convert to array
@@ -354,114 +561,188 @@ const AddProduct = () => {
               className="w-full p-2 border rounded"
             />
           </div>
+        
+        </div>
+ {/* Grandparent Category */}
+   <div className="grid grid-cols-2 gap-4 mb-4">
           <div>
-            <label className="block mb-1 font-medium">Language</label>
+            <label className="block mb-1 font-medium">Material</label>
             <input
-              value={language}
-              onChange={(e) => setLanguage(e.target.value)}
+              value={material}
+              onChange={(e) => setMaterial(e.target.value)}
               className="w-full p-2 border rounded"
             />
           </div>
+    <div>
+  <label className="block mb-1 font-medium">Weight</label>
+  <select
+    value={weight}
+    onChange={(e) => setWeight(e.target.value)}
+    className="w-full p-2 border rounded"
+  >
+    <option value="">-- Select Weight --</option>
+    <option value="Lightweight">Lightweight</option>
+    <option value="Mediumweight">Mediumweight</option>
+    <option value="Heavyweight">Heavyweight</option>
+  </select>
+</div>
+
         </div>
+
+        <div className="grid grid-cols-2 gap-4 mb-4">
+      <div>
+        <label className="block mb-1 font-medium">Brand</label>
+        <select
+          value={brand}
+          onChange={(e) => setBrand(e.target.value)}
+          className="w-full p-2 border rounded"
+        >
+          <option value="">-- Select Brand --</option>
+          {brands.map((b) => (
+            <option key={b._id} value={b._id}>
+              {b.name}
+            </option>
+          ))}
+        </select>
+      </div>
+   <div>
+  <label className="block mb-1 font-medium">Closure Type</label>
+  <select
+    value={closureType}
+    onChange={(e) => setClosureType(e.target.value)}
+    className="w-full p-2 border rounded"
+  >
+    <option value="">-- Select Closure Type --</option>
+    <option value="No Closure">No Closure</option>
+    <option value="Zipper">Zipper</option>
+    <option value="Buttons">Buttons</option>
+    <option value="Hooks">Hooks</option>
+    <option value="Velcro">Velcro</option>
+  </select>
+</div>
+
+        </div>
+
+        {/* Array fields */}
+        {[
+
+          { label: "Sizes (comma separated)", state: size, setter: setSize },
+          { label: "Tags (comma separated)", state: tag, setter: setTag },
+       
+          { label: "Features (comma separated)", state: features, setter: setFeatures },
+        ].map(({ label, state, setter }) => (
+          <div key={label} className="mb-4">
+            <label className="block mb-1 font-medium">{label}</label>
+            <input
+              value={state}
+              onChange={(e) => setter(e.target.value)}
+              className="w-full p-2 border rounded"
+            />
+          </div>
+        ))}
+        <div>
+  <label className="block mb-1 font-medium">Decoration Method</label>
+  <select
+    value={decorationMethods[0] || ""}
+    onChange={(e) => setDecorationMethods([e.target.value])}
+    className="w-full p-2 border rounded"
+  >
+    <option value="">-- Select Method --</option>
+    <option value="Printed">Printed</option>
+    <option value="Embroidered">Embroidered</option>
+    <option value="Debossed">Debossed</option>
+  </select>
+</div>
+
+<div className="mb-4">
+  <label className="block mb-2 font-medium">Select Colors</label>
+  <div className="flex flex-wrap gap-2">
+    {availableColors.map((color) => (
+      <div
+        key={color.name}
+        className={`w-10 h-10 rounded cursor-pointer border-2 ${
+          selectedColors.includes(color.name)
+            ? "border-blue-500"
+            : "border-gray-300"
+        }`}
+        style={{ backgroundColor: color.hex }}
+        onClick={() => toggleColor(color.name)}
+      />
+    ))}
+  </div>
+  <div className="mt-2 text-sm text-gray-600">
+    Selected: {selectedColors.join(", ") || "None"}
+  </div>
+</div>
+
 
         {/* Parent Category */}
-        <div className="mb-4">
-          <label className="block mb-1 font-medium">Select Category</label>
-          <select
-            value={selectedParentId}
-            onChange={handleParentChange}
-            className="w-full p-2 border rounded"
-          >
-            <option value="">-- Select Parent --</option>
-            {parentCategories.map((cat) => (
-              <option key={cat._id} value={cat._id}>
-                {cat.name}
-              </option>
-            ))}
-          </select>
-        </div>
+  {/* Grandparent */}
+<div className="mb-4">
+  <label className="block mb-1 font-medium">Grandparent Category</label>
+  <select
+    value={selectedGrandParent}
+    onChange={handleGrandParentChange}
+    className="w-full p-2 border rounded"
+  >
+    <option value="">-- Select Grandparent --</option>
+    {grandParents.map((cat) => (
+      <option key={cat._id} value={cat._id}>
+        {cat.name}
+      </option>
+    ))}
+  </select>
+</div>
 
-        {/* Child Category */}
-        <div className="mb-4">
-          <label className="block mb-1 font-medium">Select Sub Category</label>
-          <select
-            value={selectedChildId}
-            onChange={(e) => setSelectedChildId(e.target.value)}
-            className="w-full p-2 border rounded"
-            disabled={!childCategories.length}
-          >
-            <option value="">-- Select Sub Category --</option>
-            {childCategories.map((cat) => (
-              <option key={cat._id} value={cat._id}>
-                {cat.name}
-              </option>
-            ))}
-          </select>
-        </div>
+{/* Parent */}
+<div className="mb-4">
+  <label className="block mb-1 font-medium">Parent Category</label>
+  <select
+    value={selectedParent}
+    onChange={handleParentChange}
+    className="w-full p-2 border rounded"
+    disabled={!parents.length}
+  >
+    <option value="">-- Select Parent --</option>
+    {parents.map((cat) => (
+      <option key={cat._id} value={cat._id}>
+        {cat.name}
+      </option>
+    ))}
+  </select>
+</div>
+
+{/* Child */}
+<div className="mb-4">
+  <label className="block mb-1 font-medium">Child Category</label>
+  <select
+    value={selectedChild}
+    onChange={(e) => setSelectedChild(e.target.value)}
+    className="w-full p-2 border rounded"
+    disabled={!children.length}
+  >
+    <option value="">-- Select Child --</option>
+    {children.map((cat) => (
+      <option key={cat._id} value={cat._id}>
+        {cat.name}
+      </option>
+    ))}
+  </select>
+</div>
+
 
         {/* Product Type */}
+     
         <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-2">
-            Product Type
-          </label>
-          <select
-            value={productType}
-            onChange={(e) => setProductType(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-          >
-            <option value="">-- Select Product Type --</option>
-            <option value="book">Book</option>
-            <option value="video">Video</option>
-            <option value="audio">Audio</option>
-            <option value="course">Course</option>
-          </select>
-        </div>
-        {/* Product Images */}
-        <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-2">
-            Upload Product Images
-          </label>
+          <label className="block mb-1 font-medium">Upload Product Images</label>
           <input
             type="file"
-            accept="image/*"
             multiple
-            // onChange={(e) => setProductImages(e.target.files)}
-            onChange={(e) => setProductImages([...e.target.files])}
+            accept="image/*"
+            onChange={(e) => setImages([...e.target.files])}
             className="w-full"
           />
         </div>
-        {/*{(productType === "video" || productType === "audio") && (
-          <div className="mb-4">
-            <label className="block text-gray-700 font-medium mb-2">
-              Upload{" "}
-              {productType.charAt(0).toUpperCase() + productType.slice(1)} File
-            </label>
-            <input
-              type="file"
-              accept={productType === "video" ? "video/*" : "audio/*"}
-              onChange={(e) => setVideoOrAudioFile(e.target.files[0])}
-              className="w-full"
-            />
-          </div>
-        )}*/}
-        {["video", "audio", "book", "course"].includes(productType) && (
-          <div className="mb-4">
-            <label className="block text-gray-700 font-medium mb-2">
-              Upload File
-            </label>
-            {/*} <input
-              type="file"
-              onChange={(e) => setVideoOrAudioFile(e.target.files[0])}
-              className="w-full"
-            />*/}
-
-            <input
-              type="file"
-              onChange={(e) => setSupportingFile(e.target.files[0])}
-              className="w-full"
-            />
-          </div>
-        )}
 
         {/* Submit Button */}
         {/*} <div className="flex justify-end">
