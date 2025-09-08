@@ -176,16 +176,28 @@ const Category = () => {
     category.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleDelete = async (categoryId) => {
-    try {
-      await axios.delete(`${import.meta.env.VITE_BASE_URL}/categories/${categoryId}`);
-      setCategories(categories.filter((category) => category._id !== categoryId));
-    } catch (error) {
-      console.error("Error deleting category:", error);
-    }
-  };
+  // const handleDelete = async (categoryId) => {
+  //   try {
+  //     await axios.delete(`${import.meta.env.VITE_BASE_URL}/categories/${categoryId}`);
+  //     setCategories(categories.filter((category) => category._id !== categoryId));
+  //   } catch (error) {
+  //     console.error("Error deleting category:", error);
+  //   }
+  // };
 
   // Recursive renderer for categories
+  const handleDelete = async (categoryId) => {
+  if (!window.confirm("Are you sure you want to delete this category and all its subcategories?")) return;
+
+  try {
+    await axios.delete(`${import.meta.env.VITE_BASE_URL}/category/${categoryId}`);
+    // Refetch all categories after deletion
+    const { data } = await axios.get(`${import.meta.env.VITE_BASE_URL}/categories`);
+    setCategories(data);
+  } catch (error) {
+    console.error("Error deleting category:", error);
+  }
+};
   const renderCategoryTree = (category, level = 0) => (
     <div key={category._id} style={{ marginLeft: `${level * 20}px` }}>
       <div className="flex items-center justify-between py-1">
@@ -202,7 +214,7 @@ const Category = () => {
           </button>
           <button
             className="ml-2 text-blue-500 hover:text-blue-700"
-            onClick={() => navigate(`/edit-category/${category._id}`)}
+  onClick={() => navigate(`/edit-category/${category._id}`)}
             style={{ color: "white" }}
           >
             Edit
@@ -217,6 +229,7 @@ const Category = () => {
         )}
     </div>
   );
+
 
   return (
     <div className="p">

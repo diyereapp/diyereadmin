@@ -15,6 +15,8 @@ import NewCategory from "./Pages/Skills/NewCategory";
 import AddProduct from "./Pages/products/AddProduct";
 import BrandList from "./Pages/brands/BrandList";
 import CreateBrand from "./Pages/brands/CreateBrand";
+import EditCat from "./Pages/Skills/EditCat";
+
 
 const router = createBrowserRouter([
   {
@@ -60,7 +62,10 @@ const router = createBrowserRouter([
     path: "/products",
     element: <ProductList />,
   },
+{ path: "/edit-category/:id",
+   element: <EditCat />
 
+},
   {
     path: "/user/:id",
     element: <UserDetils />,
