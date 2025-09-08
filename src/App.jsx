@@ -13,6 +13,8 @@ import ProductDetails from "./Pages/products/ProductDetails";
 import OrderDetails from "./Pages/Order/OrderDetails";
 import NewCategory from "./Pages/Skills/NewCategory";
 import AddProduct from "./Pages/products/AddProduct";
+import BrandList from "./Pages/brands/BrandList";
+import CreateBrand from "./Pages/brands/CreateBrand";
 
 const router = createBrowserRouter([
   {
@@ -45,6 +47,14 @@ const router = createBrowserRouter([
   {
     path: "/orders",
     element: <OrderList />,
+  },
+  {
+    path: "/brands",
+    element: <BrandList />,
+  },
+  {
+    path: "/add-brand",
+    element: <CreateBrand />,
   },
   {
     path: "/products",

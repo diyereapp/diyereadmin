@@ -55,6 +55,13 @@ const AdminHeader = () => {
           >
             Category
           </a>
+              <a
+            href="/brands"
+            className="hover:text-primary"
+            style={{ color: "black" }}
+          >
+            Brands
+          </a>
           <a
             href="/products"
             className="hover:text-primary"
@@ -117,6 +124,9 @@ const AdminHeader = () => {
           </a>
           <a href="/category" className="block" onClick={handleCloseMenu}>
             Category
+          </a>
+            <a href="/brands" className="block" onClick={handleCloseMenu}>
+            Brands
           </a>
           <a href="/products" className=" block" onClick={handleCloseMenu}>
             Products
