@@ -28,7 +28,10 @@ const AddProduct = () => {
   const [color, setColor] = useState("");
   const [size, setSize] = useState("");
 
-  const [decorationMethods, setDecorationMethods] = useState("");
+const [decorationMethods, setDecorationMethods] = useState([
+  { name: "", note: "" },
+]);
+
   const [features, setFeatures] = useState("");
   const [material, setMaterial] = useState("");
   const [weight, setWeight] = useState("");
@@ -525,13 +528,19 @@ const handleSubmit = async () => {
       formData.append("tag", productTag);
     }
 
-    if (Array.isArray(decorationMethods) && decorationMethods.length > 0) {
-      decorationMethods.forEach((method) =>
-        formData.append("decorationMethods", method)
-      );
-    } else if (decorationMethods) {
-      formData.append("decorationMethods", decorationMethods);
-    }
+    // if (Array.isArray(decorationMethods) && decorationMethods.length > 0) {
+    //   decorationMethods.forEach((method) =>
+    //     formData.append("decorationMethods", method)
+    //   );
+    // } else if (decorationMethods) {
+    //   formData.append("decorationMethods", decorationMethods);
+    // }
+if (Array.isArray(decorationMethods) && decorationMethods.length > 0) {
+  decorationMethods.forEach((method, index) => {
+    formData.append(`decorationMethods[${index}][name]`, method.name);
+    formData.append(`decorationMethods[${index}][note]`, method.note || "");
+  });
+}
 
     if (Array.isArray(features) && features.length > 0) {
       features.forEach((feature) => formData.append("features", feature));
@@ -749,19 +758,49 @@ const handleSubmit = async () => {
             />
           </div>
         ))}
-        <div>
-  <label className="block mb-1 font-medium">Decoration Method</label>
-  <select
-    value={decorationMethods[0] || ""}
-    onChange={(e) => setDecorationMethods([e.target.value])}
-    className="w-full p-2 border rounded"
-  >
-    <option value="">-- Select Method --</option>
-    <option value="Printed">Printed</option>
-    <option value="Embroidered">Embroidered</option>
-    <option value="Debossed">Debossed</option>
-  </select>
+<label className="block mb-1 font-medium">Decoration Methods</label>
+<div className="space-y-2">
+  {decorationMethods.map((method, idx) => (
+    <div key={idx} className="flex gap-2">
+      <select
+        value={method.name}
+        onChange={(e) => {
+          const updated = [...decorationMethods];
+          updated[idx].name = e.target.value;
+          setDecorationMethods(updated);
+        }}
+        className="p-2 border rounded w-1/2"
+      >
+        <option value="">-- Select Method --</option>
+        <option value="Printed">Printed</option>
+        <option value="Embroidered">Embroidered</option>
+        <option value="Debossed">Debossed</option>
+      </select>
+      <input
+        type="text"
+        placeholder="Note (e.g. No Minimum)"
+        value={method.note || ""}
+        onChange={(e) => {
+          const updated = [...decorationMethods];
+          updated[idx].note = e.target.value;
+          setDecorationMethods(updated);
+        }}
+        className="p-2 border rounded w-1/2"
+      />
+    </div>
+  ))}
 </div>
+
+<button
+  type="button"
+  onClick={() =>
+    setDecorationMethods([...decorationMethods, { name: "", note: "" }])
+  }
+  className="mt-2 px-3 py-1 bg-blue-500 text-white rounded"
+>
+  + Add Decoration Method
+</button>
+
 
 <div className="mb-4">
   <label className="block mb-2 font-medium">Select Colors</label>
