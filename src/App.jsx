@@ -16,6 +16,7 @@ import AddProduct from "./Pages/products/AddProduct";
 import BrandList from "./Pages/brands/BrandList";
 import CreateBrand from "./Pages/brands/CreateBrand";
 import EditCat from "./Pages/Skills/EditCat";
+import EditProduct from "./Pages/products/EditProduct";
 
 
 const router = createBrowserRouter([
@@ -64,6 +65,10 @@ const router = createBrowserRouter([
   },
 { path: "/edit-category/:id",
    element: <EditCat />
+
+},
+{ path: "/edit-product/:id",
+   element: <EditProduct />
 
 },
   {
